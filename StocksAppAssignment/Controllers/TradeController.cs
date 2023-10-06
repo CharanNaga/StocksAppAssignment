@@ -10,6 +10,13 @@ namespace StocksAppAssignment.Controllers
         private readonly IConfiguration _configuration;
         private readonly TradingOptions _tradingOptions;
 
+        /// <summary>
+        /// Constructor for TradeController that executes when a new object is created for the class
+        /// </summary>
+        /// <param name="tradingOptions">Injecting TradeOptions config through Options pattern</param>
+        /// <param name="finnhubService">Injecting FinnhubService</param>
+        /// <param name="configuration">Injecting IConfiguration</param>
+
         public TradeController(IFinnhubService finnhubService, IConfiguration configuration,IOptions<TradingOptions> tradingOptions)
         {
             _finnhubService = finnhubService;
