@@ -23,7 +23,7 @@ namespace Services
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://finnhub.io/api/v1/stock/profile2?symbol=MSFT&token=ckg0eq1r01qknh1jk6c0ckg0eq1r01qknh1jk6cg") //URI includes the secret token
+                RequestUri = new Uri($"https://finnhub.io/api/v1/stock/profile2?symbol={stockSymbol}&token={_configuration["FinnhubToken"]}") //URI includes the secret token
             };
 
             //send request
