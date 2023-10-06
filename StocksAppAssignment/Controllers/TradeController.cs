@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ServiceContracts;
+using StocksAppAssignment.Models;
 
 namespace StocksAppAssignment.Controllers
 {
@@ -38,7 +39,29 @@ namespace StocksAppAssignment.Controllers
 
             //get stock price quotes from API server
             Dictionary<string, object>? stockQuoteDictionary = _finnhubService.GetStockPriceQuote(_tradingOptions.DefaultStockSymbol);
-            return View();
+
+
+            //create model object
+            StockTrade stockTrade = new StockTrade()
+            { 
+                StockSymbol = _tradingOptions.DefaultStockSymbol
+            };
+
+            //load data from finnHubService into model object
+            if (companyProfileDictionary != null && stockQuoteDictionary != null)
+            {
+                stockTrade = new StockTrade() 
+                { 
+                    StockSymbol = Convert.ToString(companyProfileDictionary["ticker"]),
+                    StockName = Convert.ToString(companyProfileDictionary["name"]), 
+                    Price = Convert.ToDouble(stockQuoteDictionary["c"].ToString())
+                };
+            }
+
+            //Send Finnhub token to view
+            ViewBag.FinnhubToken = _configuration["FinnhubToken"];
+
+            return View(stockTrade);
         }
     }
 }
