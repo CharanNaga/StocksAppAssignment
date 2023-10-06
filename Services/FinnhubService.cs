@@ -1,4 +1,5 @@
-﻿using ServiceContracts;
+﻿using Microsoft.Extensions.Configuration;
+using ServiceContracts;
 using System.Text.Json;
 
 namespace Services
@@ -6,9 +7,11 @@ namespace Services
     public class FinnhubService:IFinnhubService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public FinnhubService(IHttpClientFactory httpClientFactory)
+        private readonly IConfiguration _configuration;
+        public FinnhubService(IHttpClientFactory httpClientFactory,IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         public Dictionary<string, object>? GetCompanyProfile(string stockSymbol)
@@ -25,7 +28,7 @@ namespace Services
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://finnhub.io/api/v1/quote?symbol=MSFT&token=ckg0eq1r01qknh1jk6c0ckg0eq1r01qknh1jk6cg") //URI includes the secret token
+                RequestUri = new Uri($"https://finnhub.io/api/v1/quote?symbol={stockSymbol}&token={_configuration["FinnhubToken"]}") //URI includes the secret token
             };
 
             //send request
