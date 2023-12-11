@@ -62,12 +62,16 @@ namespace Services
 
         public Task<List<BuyOrderResponse>> GetBuyOrders()
         {
-            throw new NotImplementedException();
+            //Converts all buyorders from "BuyOrder" type to "BuyOrderResponse" type.
+            //Return all BuyOrderResponse Objects.
+            return Task.FromResult(_buyOrders.Select(b => b.ToBuyOrderResponse()).ToList());
         }
 
         public Task<List<SellOrderResponse>> GetSellOrders()
         {
-            throw new NotImplementedException();
+            //Converts all sellorders from "SellOrder" type to "SellOrderResponse" type.
+            //Return all SellOrderResponse Objects.
+            return Task.FromResult(_sellOrders.Select(s => s.ToSellOrderResponse()).ToList());
         }
     }
 }
