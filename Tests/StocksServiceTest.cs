@@ -4,16 +4,22 @@ using Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Runtime.ConstrainedExecution;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Xml.Linq;
+using Xunit.Abstractions;
 
 namespace Tests
 {
     public class StocksServiceTest
     {
         private readonly IStocksService _stocksService;
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        public StocksServiceTest()
+        public StocksServiceTest(ITestOutputHelper testOutputHelper)
         {
             _stocksService = new StocksService();
+            _testOutputHelper = testOutputHelper;
         }
 
         #region CreateBuyOrder
@@ -134,9 +140,11 @@ namespace Tests
             };
             //Act
             BuyOrderResponse buyOrderResponse = await _stocksService.CreateBuyOrder(buyOrderRequest);
+            List<BuyOrderResponse> buyOrderResponseFromGet = await _stocksService.GetBuyOrders();
 
             //Assert
             Assert.True(buyOrderResponse.BuyOrderID!= Guid.Empty);
+            Assert.Contains(buyOrderResponse, buyOrderResponseFromGet);
         }
         #endregion
 
@@ -258,11 +266,144 @@ namespace Tests
             };
             //Act
             SellOrderResponse sellOrderResponse = await _stocksService.CreateSellOrder(sellOrderRequest);
+            List<SellOrderResponse> sellOrderResponseFromGet = await _stocksService.GetSellOrders();
+
             //Assert
             Assert.True(sellOrderResponse.SellOrderID != Guid.Empty);
+            Assert.Contains(sellOrderResponse, sellOrderResponseFromGet);
         }
         #endregion
 
+        #region GetBuyOrders
+        //1. When you invoke this method, by default, the returned list should be empty.
+        [Fact]
+        public async void GetBuyOrders_EmptyList()
+        {
+            //Act 
+            List<BuyOrderResponse> buyOrderResponseList = await _stocksService.GetBuyOrders();
 
+            //Assert
+            Assert.Empty(buyOrderResponseList);
+        }
+
+        //2. When you first add few buy orders using CreateBuyOrder() method; and then invoke GetBuyOrders() method; the returned list should contain all the same buy orders.
+        [Fact]
+        public async void GetBuyOrders_AddFewOrders()
+        {
+            //Arrange
+            BuyOrderRequest buyOrderRequest1 = new BuyOrderRequest()
+            {
+                StockSymbol = "sample symbol1",
+                StockName = "Test-1",
+                DateAndTimeOfOrder = DateTime.Parse("2001-04-01"),
+                Quantity = 5,
+                Price = 50
+            };
+            BuyOrderRequest buyOrderRequest2 = new BuyOrderRequest()
+            {
+                StockSymbol = "sample symbol",
+                StockName = "Test-2",
+                DateAndTimeOfOrder = DateTime.Parse("2002-01-03"),
+                Quantity = 10,
+                Price = 100
+            };
+            List<BuyOrderRequest> buyOrderRequestList = new List<BuyOrderRequest> { buyOrderRequest1, buyOrderRequest2 };
+
+            //Act
+            List<BuyOrderResponse> buyOrderResponseList = new List<BuyOrderResponse>();
+            foreach(BuyOrderRequest buyOrderRequest in buyOrderRequestList)
+            {
+                buyOrderResponseList.Add(await _stocksService.CreateBuyOrder(buyOrderRequest));
+            }
+
+            //print expected list
+            _testOutputHelper.WriteLine("Expected: ");
+            foreach(BuyOrderResponse response in buyOrderResponseList)
+            {
+                _testOutputHelper.WriteLine($"BuyOrderResponse: {response}");
+            }
+
+            List<BuyOrderResponse> buyOrderResponseFromGet = await _stocksService.GetBuyOrders();
+
+            //print actual list
+            _testOutputHelper.WriteLine("Actual: ");
+            foreach (BuyOrderResponse response in buyOrderResponseFromGet)
+            {
+                _testOutputHelper.WriteLine($"BuyOrderResponse: {response}");
+            }
+
+            //Assert
+            foreach (BuyOrderResponse response in buyOrderResponseList)
+            {
+                Assert.Contains(response, buyOrderResponseFromGet);
+            }
+        }
+        #endregion
+
+        #region GetSellOrders
+        //1. When you invoke this method, by default, the returned list should be empty.
+        [Fact]
+        public async void GetSellOrders_EmptyList()
+        {
+            //Act 
+            List<SellOrderResponse> sellOrderResponseList = await _stocksService.GetSellOrders();
+
+            //Assert
+            Assert.Empty(sellOrderResponseList);
+        }
+
+        //2. When you first add few sell orders using CreateSellOrder() method; and then invoke GetSellOrders() method; the returned list should contain all the same sell orders.
+        [Fact]
+        public async void GetSellOrders_AddFewSellOrders()
+        {
+            //Arrange
+            SellOrderRequest sellOrderRequest1 = new SellOrderRequest()
+            {
+                StockSymbol = "sample symbol1",
+                StockName = "Test-1",
+                DateAndTimeOfOrder = DateTime.Parse("2001-04-01"),
+                Quantity = 5,
+                Price = 50
+            };
+            SellOrderRequest sellOrderRequest2 = new SellOrderRequest()
+            {
+                StockSymbol = "sample symbol",
+                StockName = "Test-2",
+                DateAndTimeOfOrder = DateTime.Parse("2002-01-03"),
+                Quantity = 10,
+                Price = 100
+            };
+            List<SellOrderRequest> sellOrderRequestList = new List<SellOrderRequest> { sellOrderRequest1, sellOrderRequest2 };
+
+            //Act
+            List<SellOrderResponse> sellOrderResponseList = new List<SellOrderResponse>();
+            foreach (SellOrderRequest sellOrderRequest in sellOrderRequestList)
+            {
+                sellOrderResponseList.Add(await _stocksService.CreateSellOrder(sellOrderRequest));
+            }
+
+            //print expected list
+            _testOutputHelper.WriteLine("Expected: ");
+            foreach (SellOrderResponse response in sellOrderResponseList)
+            {
+                _testOutputHelper.WriteLine($"SellOrderResponse: {response}");
+            }
+
+            List<SellOrderResponse> sellOrderResponseFromGet = await _stocksService.GetSellOrders();
+
+            //print actual list
+            _testOutputHelper.WriteLine("Actual: ");
+            foreach (SellOrderResponse response in sellOrderResponseFromGet)
+            {
+                _testOutputHelper.WriteLine($"SellOrderResponse: {response}");
+            }
+
+            //Assert
+            foreach (SellOrderResponse response in sellOrderResponseList)
+            {
+                Assert.Contains(response, sellOrderResponseFromGet);
+            }
+        }
+        #endregion
     }
 }
