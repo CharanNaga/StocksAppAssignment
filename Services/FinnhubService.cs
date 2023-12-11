@@ -14,7 +14,7 @@ namespace Services
             _configuration = configuration;
         }
 
-        public Dictionary<string, object>? GetCompanyProfile(string stockSymbol)
+        public async Task<Dictionary<string, object>?> GetCompanyProfile(string stockSymbol)
         {
             //create http client
             HttpClient httpClient = _httpClientFactory.CreateClient();
@@ -27,7 +27,7 @@ namespace Services
             };
 
             //send request
-            HttpResponseMessage httpResponseMessage = httpClient.Send(httpRequestMessage);
+            HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             //read response body
             string responseBody = new StreamReader(httpResponseMessage.Content.ReadAsStream()).ReadToEnd();
@@ -45,7 +45,7 @@ namespace Services
             return responseDictionary;
         }
 
-        public Dictionary<string, object>? GetStockPriceQuote(string stockSymbol)
+        public async Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
         {
             //create http client
             HttpClient httpClient = _httpClientFactory.CreateClient();
@@ -58,7 +58,7 @@ namespace Services
             };
 
             //send request
-            HttpResponseMessage httpResponseMessage = httpClient.Send(httpRequestMessage);
+            HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             //read response body
             string responseBody = new StreamReader(httpResponseMessage.Content.ReadAsStream()).ReadToEnd();
