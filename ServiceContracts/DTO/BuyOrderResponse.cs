@@ -47,17 +47,17 @@ namespace ServiceContracts.DTO
     }
     public static class BuyOrderExtensions
     {
-        public static BuyOrderResponse ToBuyOrderResponse(this BuyOrderResponse buyOrderResponse)
+        public static BuyOrderResponse ToBuyOrderResponse(this BuyOrder buyOrder)
         {
             return new BuyOrderResponse()
             {
-                BuyOrderID = buyOrderResponse.BuyOrderID,
-                StockSymbol = buyOrderResponse.StockSymbol,
-                StockName = buyOrderResponse.StockName,
-                DateAndTimeOfOrder = buyOrderResponse.DateAndTimeOfOrder,
-                Quantity = buyOrderResponse.Quantity,
-                Price = buyOrderResponse.Price,
-                TradeAmount = buyOrderResponse.Price * buyOrderResponse.Quantity
+                BuyOrderID = buyOrder.BuyOrderID,
+                StockSymbol = buyOrder.StockSymbol,
+                StockName = buyOrder.StockName,
+                DateAndTimeOfOrder = buyOrder.DateAndTimeOfOrder,
+                Quantity = buyOrder.Quantity,
+                Price = buyOrder.Price,
+                TradeAmount = buyOrder.Price * buyOrder.Quantity
             };
         }
     }
