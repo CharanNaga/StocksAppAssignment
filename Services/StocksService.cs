@@ -34,13 +34,30 @@ namespace Services
             //5. Then add it to the List<BuyOrder>
             _buyOrders.Add(buyOrder);
 
-            //6. Return PersonResponse object with generated PersonID.
+            //6. Return BuyOrderResponse object with generated BuyOrderID.
             return Task.FromResult(buyOrder.ToBuyOrderResponse());
         }
 
         public Task<SellOrderResponse> CreateSellOrder(SellOrderRequest? sellOrderRequest)
         {
-            throw new NotImplementedException();
+            //1. Check sellOrderRequest != null
+            if (sellOrderRequest == null)
+                throw new ArgumentNullException(nameof(sellOrderRequest));
+
+            //2. Validate all properties of sellOrderRequest
+            ValidationHelper.ModelValidation(sellOrderRequest); //validating all properties using Model validations by calling a reusable method.
+
+            //3. Convert SellOrderRequest to SellOrder type
+            SellOrder sellOrder = sellOrderRequest.ToSellOrder();
+
+            //4. Generate a new SellOrderID
+            sellOrder.SellOrderID = Guid.NewGuid();
+
+            //5. Then add it to the List<SellOrder>
+            _sellOrders.Add(sellOrder);
+
+            //6. Return SellOrderResponse object with generated SellOrderID.
+            return Task.FromResult(sellOrder.ToSellOrderResponse());
         }
 
         public Task<List<BuyOrderResponse>> GetBuyOrders()
