@@ -5,10 +5,12 @@ using StocksAppAssignment.Models;
 
 namespace StocksAppAssignment.Controllers
 {
+    [Route("[controller]")] //Route Token
     public class TradeController : Controller
     {
         private readonly IFinnhubService _finnhubService;
         private readonly IConfiguration _configuration;
+        private readonly IStocksService _stocksService;
         private readonly TradingOptions _tradingOptions;
 
         /// <summary>
@@ -16,12 +18,14 @@ namespace StocksAppAssignment.Controllers
         /// </summary>
         /// <param name="tradingOptions">Injecting TradeOptions config through Options pattern</param>
         /// <param name="finnhubService">Injecting FinnhubService</param>
+        /// <param name="stocksService">Injecting StocksService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
 
-        public TradeController(IFinnhubService finnhubService, IConfiguration configuration,IOptions<TradingOptions> tradingOptions)
+        public TradeController(IFinnhubService finnhubService, IConfiguration configuration,IStocksService stocksService,IOptions<TradingOptions> tradingOptions)
         {
             _finnhubService = finnhubService;
             _configuration = configuration;
+            _stocksService = stocksService;
             _tradingOptions = tradingOptions.Value;
         }
 
@@ -53,14 +57,14 @@ namespace StocksAppAssignment.Controllers
                 stockTrade = new StockTrade() 
                 { 
                     StockSymbol = Convert.ToString(companyProfileDictionary["ticker"]),
-                    StockName = Convert.ToString(companyProfileDictionary["name"]), 
+                    StockName = Convert.ToString(companyProfileDictionary["name"]),
+                    Quantity = _tradingOptions.DefaultOrderQuantity ?? 0,
                     Price = Convert.ToDouble(stockQuoteDictionary["c"].ToString())
                 };
             }
 
             //Send Finnhub token to view
             ViewBag.FinnhubToken = _configuration["FinnhubToken"];
-
             return View(stockTrade);
         }
     }
