@@ -33,12 +33,14 @@
                 </div>
 
                 <div class="button-panel">
-                    <button type="submit" formaction="~/Trade/SellOrder" class="button button-red-back trading-button sell-button">
+                    @*<button type="submit" formaction="~/Trade/SellOrder" class="button button-red-back trading-button sell-button">*@
+                    <button type="submit" asp-controller="Trade" asp-action="SellOrder" class="button button-red-back trading-button sell-button">
                         <i class="fa-solid fa-arrow-down"></i>
                         <span>Sell</span>
                     </button>
 
-                    <button type="submit" formaction="~/Trade/BuyOrder" class="button button-green-back trading-button buy-button">
+                    @*<button type="submit" formaction="~/Trade/BuyOrder" class="button button-green-back trading-button buy-button">*@
+                    <button type="submit" asp-controller="Trade" asp-action="BuyOrder" class="button button-green-back trading-button buy-button">
                         <i class="fa-solid fa-arrow-up"></i>
                         <span>Buy</span>
                     </button>
