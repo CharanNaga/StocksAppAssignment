@@ -25,13 +25,13 @@ namespace Tests
         #region CreateBuyOrder
         //1. When you supply BuyOrderRequest as null, it should throw ArgumentNullException.
         [Fact]
-        public void CreateBuyOrder_NullBuyOrder()
+        public async Task CreateBuyOrder_NullBuyOrder()
         {
             //Arrange
             BuyOrderRequest? request = null;
 
             //Assert
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => 
             {
                 //Act
                 await _stocksService.CreateBuyOrder(request);
@@ -40,12 +40,12 @@ namespace Tests
 
         //2. When you supply buyOrderQuantity as 0 (as per the specification, minimum is 1), it should throw ArgumentException.
         [Fact]
-        public void CreateBuyOrder_MinimumBuyOrderQuantity()
+        public async Task CreateBuyOrder_MinimumBuyOrderQuantity()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest() { Quantity = 0 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateBuyOrder(buyOrderRequest);
@@ -54,12 +54,12 @@ namespace Tests
 
         //3. When you supply buyOrderQuantity as 100001 (as per the specification, maximum is 100000), it should throw ArgumentException.
         [Fact]
-        public void CreateBuyOrder_MaximumBuyOrderQuantity()
+        public async Task CreateBuyOrder_MaximumBuyOrderQuantity()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest() { Quantity = 100001 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateBuyOrder(buyOrderRequest);
@@ -68,12 +68,12 @@ namespace Tests
 
         //4. When you supply buyOrderPrice as 0 (as per the specification, minimum is 1), it should throw ArgumentException.
         [Fact]
-        public void CreateBuyOrder_MinimumBuyOrderPrice()
+        public async Task CreateBuyOrder_MinimumBuyOrderPrice()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest() { Price = 0 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateBuyOrder(buyOrderRequest);
@@ -82,12 +82,12 @@ namespace Tests
 
         //5. When you supply buyOrderPrice as 10001 (as per the specification, maximum is 10000), it should throw ArgumentException.
         [Fact]
-        public void CreateBuyOrder_MaximumBuyOrderPrice()
+        public async Task CreateBuyOrder_MaximumBuyOrderPrice()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest() { Price = 10001 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateBuyOrder(buyOrderRequest);
@@ -96,12 +96,12 @@ namespace Tests
 
         //6. When you supply stock symbol=null (as per the specification, stock symbol can't be null), it should throw ArgumentException.
         [Fact]
-        public void CreateBuyOrder_StockSymbolIsNull()
+        public async Task CreateBuyOrder_StockSymbolIsNull()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest() { StockSymbol = null };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateBuyOrder(buyOrderRequest);
@@ -110,7 +110,7 @@ namespace Tests
 
         //7. When you supply dateAndTimeOfOrder as "1999-12-31" (YYYY-MM-DD) - (as per the specification, it should be equal or newer date than 2000-01-01), it should throw ArgumentException.
         [Fact]
-        public void CreateBuyOrder_OlderDateAndTimeBuyOrder()
+        public async Task CreateBuyOrder_OlderDateAndTimeBuyOrder()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest() 
@@ -118,7 +118,7 @@ namespace Tests
                 DateAndTimeOfOrder =  DateTime.Parse("1999-12-31")
             };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateBuyOrder(buyOrderRequest);
@@ -127,7 +127,7 @@ namespace Tests
 
         //8. If you supply all valid values, it should be successful and return an object of BuyOrderResponse type with auto-generated BuyOrderID(guid).
         [Fact]
-        public async void CreateBuyOrder_ValidBuyOrderDetails()
+        public async Task CreateBuyOrder_ValidBuyOrderDetails()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest = new BuyOrderRequest()
@@ -151,13 +151,13 @@ namespace Tests
         #region CreateSellOrder
         //1. When you supply SellOrderRequest as null, it should throw ArgumentNullException.
         [Fact]
-        public void CreateSellOrder_NullSellOrder()
+        public async Task CreateSellOrder_NullSellOrder()
         {
             //Arrange
             SellOrderRequest? request = null;
 
             //Assert
-            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(request);
@@ -166,12 +166,12 @@ namespace Tests
 
         //2. When you supply sellOrderQuantity as 0 (as per the specification, minimum is 1), it should throw ArgumentException.
         [Fact]
-        public void CreateSellOrder_MinimumSellOrderQuantity()
+        public async Task CreateSellOrder_MinimumSellOrderQuantity()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest() { Quantity = 0 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(sellOrderRequest);
@@ -180,12 +180,12 @@ namespace Tests
 
         //3. When you supply sellOrderQuantity as 100001 (as per the specification, maximum is 100000), it should throw ArgumentException.
         [Fact]
-        public void CreateSellOrder_MaximumSellOrderQuantity()
+        public async Task CreateSellOrder_MaximumSellOrderQuantity()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest() { Quantity = 100001 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(sellOrderRequest);
@@ -194,12 +194,12 @@ namespace Tests
 
         //4. When you supply sellOrderPrice as 0 (as per the specification, minimum is 1), it should throw ArgumentException.
         [Fact]
-        public void CreateSellOrder_MinimumSellOrderPrice()
+        public async Task CreateSellOrder_MinimumSellOrderPrice()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest() { Price = 0 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(sellOrderRequest);
@@ -208,12 +208,12 @@ namespace Tests
 
         //5. When you supply sellOrderPrice as 10001 (as per the specification, maximum is 10000), it should throw ArgumentException.
         [Fact]
-        public void CreateSellOrder_MaximumSellOrderPrice()
+        public async Task CreateSellOrder_MaximumSellOrderPrice()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest() { Price = 10001 };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(sellOrderRequest);
@@ -222,12 +222,12 @@ namespace Tests
 
         //6. When you supply stock symbol=null (as per the specification, stock symbol can't be null), it should throw ArgumentException.
         [Fact]
-        public void CreateSellOrder_StockSymbolIsNull()
+        public async Task CreateSellOrder_StockSymbolIsNull()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest() { StockSymbol = null };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(sellOrderRequest);
@@ -236,7 +236,7 @@ namespace Tests
 
         //7. When you supply dateAndTimeOfOrder as "1999-12-31" (YYYY-MM-DD) - (as per the specification, it should be equal or newer date than 2000-01-01), it should throw ArgumentException.
         [Fact]
-        public void CreateSellOrder_OlderDateAndTimeSellOrder()
+        public async Task CreateSellOrder_OlderDateAndTimeSellOrder()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest()
@@ -244,7 +244,7 @@ namespace Tests
                 DateAndTimeOfOrder = DateTime.Parse("1999-12-31")
             };
             //Assert
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 //Act
                 await _stocksService.CreateSellOrder(sellOrderRequest);
@@ -253,7 +253,7 @@ namespace Tests
 
         //8. If you supply all valid values, it should be successful and return an object of SellOrderResponse type with auto-generated SellOrderID(guid).
         [Fact]
-        public async void CreateSellOrder_ValidSellOrderDetails()
+        public async Task CreateSellOrder_ValidSellOrderDetails()
         {
             //Arrange
             SellOrderRequest sellOrderRequest = new SellOrderRequest()
@@ -277,7 +277,7 @@ namespace Tests
         #region GetBuyOrders
         //1. When you invoke this method, by default, the returned list should be empty.
         [Fact]
-        public async void GetBuyOrders_EmptyList()
+        public async Task GetBuyOrders_EmptyList()
         {
             //Act 
             List<BuyOrderResponse> buyOrderResponseList = await _stocksService.GetBuyOrders();
@@ -288,7 +288,7 @@ namespace Tests
 
         //2. When you first add few buy orders using CreateBuyOrder() method; and then invoke GetBuyOrders() method; the returned list should contain all the same buy orders.
         [Fact]
-        public async void GetBuyOrders_AddFewOrders()
+        public async Task GetBuyOrders_AddFewOrders()
         {
             //Arrange
             BuyOrderRequest buyOrderRequest1 = new BuyOrderRequest()
@@ -343,7 +343,7 @@ namespace Tests
         #region GetSellOrders
         //1. When you invoke this method, by default, the returned list should be empty.
         [Fact]
-        public async void GetSellOrders_EmptyList()
+        public async Task GetSellOrders_EmptyList()
         {
             //Act 
             List<SellOrderResponse> sellOrderResponseList = await _stocksService.GetSellOrders();
@@ -354,7 +354,7 @@ namespace Tests
 
         //2. When you first add few sell orders using CreateSellOrder() method; and then invoke GetSellOrders() method; the returned list should contain all the same sell orders.
         [Fact]
-        public async void GetSellOrders_AddFewSellOrders()
+        public async Task GetSellOrders_AddFewSellOrders()
         {
             //Arrange
             SellOrderRequest sellOrderRequest1 = new SellOrderRequest()
