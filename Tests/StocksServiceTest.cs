@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Linq;
 using Xunit.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Entities;
 
 namespace Tests
 {
@@ -18,7 +20,10 @@ namespace Tests
 
         public StocksServiceTest(ITestOutputHelper testOutputHelper)
         {
-            _stocksService = new StocksService();
+            _stocksService = new StocksService(
+                new StockMarketDbContext(
+                    new DbContextOptionsBuilder<StockMarketDbContext>().Options
+                    ));
             _testOutputHelper = testOutputHelper;
         }
 
