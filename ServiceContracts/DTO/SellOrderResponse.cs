@@ -2,7 +2,7 @@
 
 namespace ServiceContracts.DTO
 {
-    public class SellOrderResponse
+    public class SellOrderResponse:IOrderResponse
     {
         public Guid SellOrderID { get; set; }
 
@@ -15,6 +15,7 @@ namespace ServiceContracts.DTO
         public uint Quantity { get; set; }
 
         public double Price { get; set; }
+        public OrderType TypeOfOrder => OrderType.SellOrder;
 
         public double TradeAmount { get; set; }
 
