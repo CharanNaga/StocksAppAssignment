@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services.Helpers;
@@ -8,15 +9,13 @@ namespace Services
 {
     public class StocksService : IStocksService
     {
-        private readonly List<BuyOrder> _buyOrders;
-        private readonly List<SellOrder> _sellOrders;
+        private readonly StockMarketDbContext _db;
 
-        public StocksService()
+        public StocksService(StockMarketDbContext db)
         {
-            _buyOrders = new List<BuyOrder>();
-            _sellOrders = new List<SellOrder>();
+            _db = db;
         }
-        public Task<BuyOrderResponse> CreateBuyOrder(BuyOrderRequest? buyOrderRequest)
+        public async Task<BuyOrderResponse> CreateBuyOrder(BuyOrderRequest? buyOrderRequest)
         {
             //1. Check buyOrderRequest != null
             if (buyOrderRequest == null)
@@ -32,13 +31,15 @@ namespace Services
             buyOrder.BuyOrderID = Guid.NewGuid();
 
             //5. Then add it to the List<BuyOrder>
-            _buyOrders.Add(buyOrder);
+            //_buyOrders.Add(buyOrder);
+            _db.BuyOrders.Add(buyOrder);
+            await _db.SaveChangesAsync();
 
             //6. Return BuyOrderResponse object with generated BuyOrderID.
-            return Task.FromResult(buyOrder.ToBuyOrderResponse());
+            return buyOrder.ToBuyOrderResponse();
         }
 
-        public Task<SellOrderResponse> CreateSellOrder(SellOrderRequest? sellOrderRequest)
+        public async Task<SellOrderResponse> CreateSellOrder(SellOrderRequest? sellOrderRequest)
         {
             //1. Check sellOrderRequest != null
             if (sellOrderRequest == null)
@@ -54,24 +55,32 @@ namespace Services
             sellOrder.SellOrderID = Guid.NewGuid();
 
             //5. Then add it to the List<SellOrder>
-            _sellOrders.Add(sellOrder);
+            //_sellOrders.Add(sellOrder);
+            _db.SellOrders.Add(sellOrder);
+            await _db.SaveChangesAsync();
 
             //6. Return SellOrderResponse object with generated SellOrderID.
-            return Task.FromResult(sellOrder.ToSellOrderResponse());
+            return sellOrder.ToSellOrderResponse();
         }
 
-        public Task<List<BuyOrderResponse>> GetBuyOrders()
+        public async Task<List<BuyOrderResponse>> GetBuyOrders()
         {
             //Converts all buyorders from "BuyOrder" type to "BuyOrderResponse" type.
             //Return all BuyOrderResponse Objects.
-            return Task.FromResult(_buyOrders.Select(b => b.ToBuyOrderResponse()).ToList());
+            //return Task.FromResult(_buyOrders.Select(b => b.ToBuyOrderResponse()).ToList());
+
+            var buyOrders = await _db.BuyOrders.OrderByDescending(b=>b.DateAndTimeOfOrder).ToListAsync();
+            return buyOrders.Select(b => b.ToBuyOrderResponse()).ToList();
         }
 
-        public Task<List<SellOrderResponse>> GetSellOrders()
+        public async Task<List<SellOrderResponse>> GetSellOrders()
         {
             //Converts all sellorders from "SellOrder" type to "SellOrderResponse" type.
             //Return all SellOrderResponse Objects.
-            return Task.FromResult(_sellOrders.Select(s => s.ToSellOrderResponse()).ToList());
+            //return _sellOrders.Select(s => s.ToSellOrderResponse()).ToList();
+
+            var sellOrders = await _db.SellOrders.OrderByDescending(s => s.DateAndTimeOfOrder).ToListAsync();
+            return sellOrders.Select(s => s.ToSellOrderResponse()).ToList();
         }
     }
 }
