@@ -1,6 +1,8 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Rotativa.AspNetCore;
+using Rotativa.AspNetCore.Options;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using StocksAppAssignment.Models;
@@ -127,6 +129,23 @@ namespace StocksAppAssignment.Controllers
             };
             ViewBag.TradingOptions = _tradingOptions;
             return View(orders);
+        }
+        [Route("OrdersPDF")]
+        public async Task<IActionResult> OrdersPDF()
+        {
+            //Get list of orders
+            List<IOrderResponse> orders = new List<IOrderResponse>();
+            orders.AddRange(await _stocksService.GetBuyOrders());
+            orders.AddRange(await _stocksService.GetSellOrders());
+            orders = orders.OrderByDescending(temp => temp.DateAndTimeOfOrder).ToList();
+
+            ViewBag.TradingOptions = _tradingOptions;
+            //Return view as pdf
+            return new ViewAsPdf("OrdersPDF", orders, ViewData)
+            {
+                PageMargins = new Margins() { Top = 20, Right = 20, Bottom = 20, Left = 20 },
+                PageOrientation = Orientation.Landscape
+            };
         }
     }
 }
