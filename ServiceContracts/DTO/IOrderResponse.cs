@@ -8,8 +8,8 @@ namespace ServiceContracts.DTO
 {
     public interface IOrderResponse
     {
-        string StockSymbol { get; set; }
-        string StockName { get; set; }
+        string? StockSymbol { get; set; }
+        string? StockName { get; set; }
 
         DateTime DateAndTimeOfOrder { get; set; }
 
