@@ -418,51 +418,47 @@ namespace Tests
         #region GetSellOrders
         //1. When you invoke this method, by default, the returned list should be empty.
         [Fact]
-        public async Task GetSellOrders_EmptyList()
+        public async Task GetSellOrders_DefaultList_ToBeEmpty()
         {
             //Act 
-            List<SellOrderResponse> sellOrderResponseList = await _stocksService.GetSellOrders();
+            List<SellOrder> sellOrders = new List<SellOrder>();
+
+            //mocking 
+            _stocksRepositoryMock.Setup(
+                temp => temp.GetSellOrders())
+                .ReturnsAsync(sellOrders);
+
+            //Act
+            List<SellOrderResponse> sellOrderResponseFromGet = await _stocksService.GetSellOrders();
 
             //Assert
-            Assert.Empty(sellOrderResponseList);
+            sellOrderResponseFromGet.Should().BeEmpty();
         }
 
         //2. When you first add few sell orders using CreateSellOrder() method; and then invoke GetSellOrders() method; the returned list should contain all the same sell orders.
         [Fact]
-        public async Task GetSellOrders_AddFewSellOrders()
+        public async Task GetSellOrders_WithFewSellOrders_ToBeSuccessful()
         {
             //Arrange
-            SellOrderRequest sellOrderRequest1 = new SellOrderRequest()
+            List<SellOrder> sellOrderRequests = new List<SellOrder>()
             {
-                StockSymbol = "sample symbol1",
-                StockName = "Test-1",
-                DateAndTimeOfOrder = DateTime.Parse("2001-04-01"),
-                Quantity = 5,
-                Price = 50
+               _fixture.Create<SellOrder>(),
+               _fixture.Create<SellOrder>()
             };
-            SellOrderRequest sellOrderRequest2 = new SellOrderRequest()
-            {
-                StockSymbol = "sample symbol",
-                StockName = "Test-2",
-                DateAndTimeOfOrder = DateTime.Parse("2002-01-03"),
-                Quantity = 10,
-                Price = 100
-            };
-            List<SellOrderRequest> sellOrderRequestList = new List<SellOrderRequest> { sellOrderRequest1, sellOrderRequest2 };
 
             //Act
-            List<SellOrderResponse> sellOrderResponseList = new List<SellOrderResponse>();
-            foreach (SellOrderRequest sellOrderRequest in sellOrderRequestList)
-            {
-                sellOrderResponseList.Add(await _stocksService.CreateSellOrder(sellOrderRequest));
-            }
+            List<SellOrderResponse> sellOrderResponseExpected = sellOrderRequests.Select(temp => temp.ToSellOrderResponse()).ToList();
 
             //print expected list
             _testOutputHelper.WriteLine("Expected: ");
-            foreach (SellOrderResponse response in sellOrderResponseList)
+            foreach (SellOrderResponse response in sellOrderResponseExpected)
             {
                 _testOutputHelper.WriteLine($"SellOrderResponse: {response}");
             }
+
+            //mocking
+            _stocksRepositoryMock.Setup(temp => temp.GetSellOrders())
+                .ReturnsAsync(sellOrderRequests);
 
             List<SellOrderResponse> sellOrderResponseFromGet = await _stocksService.GetSellOrders();
 
@@ -474,10 +470,7 @@ namespace Tests
             }
 
             //Assert
-            foreach (SellOrderResponse response in sellOrderResponseList)
-            {
-                Assert.Contains(response, sellOrderResponseFromGet);
-            }
+            sellOrderResponseFromGet.Should().BeEquivalentTo(sellOrderResponseExpected);
         }
         #endregion
     }
