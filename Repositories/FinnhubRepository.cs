@@ -20,7 +20,6 @@ namespace Repositories
             //create http client
             using (HttpClient httpClient = _httpClientFactory.CreateClient())
             {
-
                 //create http request
                 HttpRequestMessage httpRequestMessage = new HttpRequestMessage()
                 {
@@ -74,9 +73,33 @@ namespace Repositories
             }
         }
 
-        public Task<List<Dictionary<string, string>>?> GetStocks()
+        public async Task<List<Dictionary<string, string>>?> GetStocks()
         {
-            throw new NotImplementedException();
+            //create http client
+            using (HttpClient httpClient = _httpClientFactory.CreateClient())
+            {
+                //create http request
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://finnhub.io/api/v1/stock/symbol?exchange=US&token={_configuration["FinnhubToken"]}") //URI includes the secret token
+                };
+
+                //send request
+                HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+
+                //read response body
+                string responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                //convert response body (from JSON into Dictionary)
+                List<Dictionary<string,string>>? responseDictionary = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(responseBody);
+
+                if (responseDictionary == null)
+                    throw new InvalidOperationException("No response from server");
+
+                //return response dictionary back to the caller
+                return responseDictionary;
+            }
         }
 
         public Task<Dictionary<string, object>?> SearchStocks(string stockSymbolToSearch)
