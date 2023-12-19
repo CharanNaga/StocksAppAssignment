@@ -1,9 +1,19 @@
-﻿using RepositoryContracts;
+﻿using Microsoft.Extensions.Configuration;
+using RepositoryContracts;
 
 namespace Repositories
 {
     public class FinnhubRepository : IFinnhubRepository
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
+
+        public FinnhubRepository(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        {
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
+        }
+
         public Task<Dictionary<string, object>?> GetCompanyProfile(string stockSymbol)
         {
             throw new NotImplementedException();
