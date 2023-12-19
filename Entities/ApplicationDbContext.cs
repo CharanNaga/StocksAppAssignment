@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace Entities
 {
-    public class StockMarketDbContext:DbContext
+    public class ApplicationDbContext:DbContext
     {
-        public StockMarketDbContext(DbContextOptions options):base(options)
+        public ApplicationDbContext(DbContextOptions options):base(options)
         {
 
         }
-        public virtual DbSet<BuyOrder>? BuyOrders { get; set; }
-        public virtual DbSet<SellOrder>? SellOrders { get;set; }
+        public virtual DbSet<BuyOrder> BuyOrders { get; set; }
+        public virtual DbSet<SellOrder> SellOrders { get;set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

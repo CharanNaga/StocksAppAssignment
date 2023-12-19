@@ -21,8 +21,8 @@ namespace Tests
         public StocksServiceTest(ITestOutputHelper testOutputHelper)
         {
             _stocksService = new StocksService(
-                new StockMarketDbContext(
-                    new DbContextOptionsBuilder<StockMarketDbContext>().Options
+                new ApplicationDbContext(
+                    new DbContextOptionsBuilder<ApplicationDbContext>().Options
                     ));
             _testOutputHelper = testOutputHelper;
         }

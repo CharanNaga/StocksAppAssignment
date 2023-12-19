@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Entities.Migrations
 {
-    [DbContext(typeof(StockMarketDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231217082058_Initial")]
     partial class Initial
     {
