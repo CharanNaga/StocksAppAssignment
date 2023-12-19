@@ -102,9 +102,36 @@ namespace Repositories
             }
         }
 
-        public Task<Dictionary<string, object>?> SearchStocks(string stockSymbolToSearch)
+        public async Task<Dictionary<string, object>?> SearchStocks(string stockSymbolToSearch)
         {
-            throw new NotImplementedException();
+            //create http client
+            using (HttpClient httpClient = _httpClientFactory.CreateClient())
+            {
+                //create http request
+                HttpRequestMessage httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://finnhub.io/api/v1/search?q={stockSymbolToSearch}&token={_configuration["FinnhubToken"]}") //URI includes the secret token
+                };
+
+                //send request
+                HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+
+                //read response body
+                string responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                //convert response body (from JSON into Dictionary)
+                Dictionary<string, object>? responseDictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+
+                if (responseDictionary == null)
+                    throw new InvalidOperationException("No response from server");
+
+                if (responseDictionary.ContainsKey("error"))
+                    throw new InvalidOperationException(Convert.ToString(responseDictionary["error"]));
+
+                //return response dictionary back to the caller
+                return responseDictionary;
+            }
         }
     }
 }
