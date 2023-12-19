@@ -1,5 +1,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using RepositoryContracts;
 using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
@@ -9,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("TradingOptions"));
+
+builder.Services.AddScoped<IFinnhubRepository, FinnhubRepository>();
+builder.Services.AddScoped<IStocksRepository, StocksRepository>();
 
 builder.Services.AddScoped<IFinnhubService, FinnhubService>();
 builder.Services.AddScoped<IStocksService, StocksService>();
