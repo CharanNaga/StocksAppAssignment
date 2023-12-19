@@ -1,29 +1,29 @@
 ﻿using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Runtime.ConstrainedExecution;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Xml.Linq;
 using Xunit.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Entities;
+using RepositoryContracts;
+using Moq;
+using AutoFixture;
 
 namespace Tests
 {
     public class StocksServiceTest
     {
         private readonly IStocksService _stocksService;
+        private readonly IStocksRepository _stocksRepository;
+        private readonly Mock<IStocksRepository> _stocksRepositoryMock;
+        private readonly IFixture _fixture;
         private readonly ITestOutputHelper _testOutputHelper;
 
         public StocksServiceTest(ITestOutputHelper testOutputHelper)
         {
-            _stocksService = new StocksService(
-                new ApplicationDbContext(
-                    new DbContextOptionsBuilder<ApplicationDbContext>().Options
-                    ));
+            _fixture = new Fixture();
+            _stocksRepositoryMock = new Mock<IStocksRepository>();
+            _stocksRepository = _stocksRepositoryMock.Object;
+            _stocksService = new StocksService(_stocksRepository);
             _testOutputHelper = testOutputHelper;
         }
 
