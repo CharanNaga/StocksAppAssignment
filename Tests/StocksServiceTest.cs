@@ -360,51 +360,46 @@ namespace Tests
         #region GetBuyOrders
         //1. When you invoke this method, by default, the returned list should be empty.
         [Fact]
-        public async Task GetBuyOrders_EmptyList()
+        public async Task GetBuyOrders_DefaultList_ToBeEmpty()
         {
             //Act 
-            List<BuyOrderResponse> buyOrderResponseList = await _stocksService.GetBuyOrders();
+            List<BuyOrder> buyOrders = new List<BuyOrder>(); 
+
+            //mocking 
+            _stocksRepositoryMock.Setup(
+                temp => temp.GetBuyOrders())
+                .ReturnsAsync(buyOrders);
+
+            //Act
+            List<BuyOrderResponse> buyOrderResponseFromGet = await _stocksService.GetBuyOrders();
 
             //Assert
-            Assert.Empty(buyOrderResponseList);
+            buyOrderResponseFromGet.Should().BeEmpty();
         }
 
         //2. When you first add few buy orders using CreateBuyOrder() method; and then invoke GetBuyOrders() method; the returned list should contain all the same buy orders.
         [Fact]
-        public async Task GetBuyOrders_AddFewOrders()
+        public async Task GetBuyOrders_WithFewBuyOrders_ToBeSuccessful()
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest1 = new BuyOrderRequest()
-            {
-                StockSymbol = "sample symbol1",
-                StockName = "Test-1",
-                DateAndTimeOfOrder = DateTime.Parse("2001-04-01"),
-                Quantity = 5,
-                Price = 50
-            };
-            BuyOrderRequest buyOrderRequest2 = new BuyOrderRequest()
-            {
-                StockSymbol = "sample symbol",
-                StockName = "Test-2",
-                DateAndTimeOfOrder = DateTime.Parse("2002-01-03"),
-                Quantity = 10,
-                Price = 100
-            };
-            List<BuyOrderRequest> buyOrderRequestList = new List<BuyOrderRequest> { buyOrderRequest1, buyOrderRequest2 };
+            BuyOrder buyOrder1 = _fixture.Create<BuyOrder>();
+            BuyOrder buyOrder2 = _fixture.Create<BuyOrder>();
+            List<BuyOrder> buyOrderRequests = new List<BuyOrder> { buyOrder1, buyOrder2 };
 
             //Act
-            List<BuyOrderResponse> buyOrderResponseList = new List<BuyOrderResponse>();
-            foreach(BuyOrderRequest buyOrderRequest in buyOrderRequestList)
-            {
-                buyOrderResponseList.Add(await _stocksService.CreateBuyOrder(buyOrderRequest));
-            }
-
+            List<BuyOrderResponse> buyOrderResponseExpected = buyOrderRequests.Select(temp => temp.ToBuyOrderResponse()).ToList();
+            List<BuyOrderResponse> buyOrderResponseFromAdd = new List<BuyOrderResponse>();
+            
             //print expected list
             _testOutputHelper.WriteLine("Expected: ");
-            foreach(BuyOrderResponse response in buyOrderResponseList)
+            foreach(BuyOrderResponse response in buyOrderResponseExpected)
             {
                 _testOutputHelper.WriteLine($"BuyOrderResponse: {response}");
             }
+
+            //mocking
+            _stocksRepositoryMock.Setup(temp => temp.GetBuyOrders())
+                .ReturnsAsync(buyOrderRequests);
 
             List<BuyOrderResponse> buyOrderResponseFromGet = await _stocksService.GetBuyOrders();
 
@@ -416,10 +411,7 @@ namespace Tests
             }
 
             //Assert
-            foreach (BuyOrderResponse response in buyOrderResponseList)
-            {
-                Assert.Contains(response, buyOrderResponseFromGet);
-            }
+            buyOrderResponseFromGet.Should().BeEquivalentTo(buyOrderResponseExpected);
         }
         #endregion
 
