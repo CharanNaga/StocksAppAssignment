@@ -6,7 +6,6 @@ using Rotativa.AspNetCore.Options;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using StocksAppAssignment.Models;
-using System.Globalization;
 
 namespace StocksAppAssignment.Controllers
 {

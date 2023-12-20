@@ -13,25 +13,25 @@ namespace Services
 
         public async Task<Dictionary<string, object>?> GetCompanyProfile(string stockSymbol)
         {
-            var responseDictionary = await _finnhubRepository.GetCompanyProfile(stockSymbol);
+            Dictionary<string,object>? responseDictionary = await _finnhubRepository.GetCompanyProfile(stockSymbol);
             return responseDictionary;
         }
 
         public async Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
         {
-            var responseDictionary = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+            Dictionary<string,object>? responseDictionary = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
             return responseDictionary;
         }
 
         public async Task<List<Dictionary<string, string>>?> GetStocks()
         {
-            var responseDictionaryList  = await _finnhubRepository.GetStocks();
+            List<Dictionary<string, string>>? responseDictionaryList  = await _finnhubRepository.GetStocks();
             return responseDictionaryList;
         }
 
         public async Task<Dictionary<string, object>?> SearchStocks(string stockSymbolToSearch)
         {
-            var responseDictionary = await _finnhubRepository.SearchStocks(stockSymbolToSearch);
+            Dictionary<string, object>? responseDictionary = await _finnhubRepository.SearchStocks(stockSymbolToSearch);
             return responseDictionary;
         }
     }
