@@ -12,11 +12,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("TradingOptions"));
 
-builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
-builder.Services.AddTransient<IStocksRepository, StocksRepository>();
-
-builder.Services.AddTransient<IFinnhubService, FinnhubService>();
 builder.Services.AddTransient<IStocksService, StocksService>();
+builder.Services.AddTransient<IFinnhubService, FinnhubService>();
+
+builder.Services.AddTransient<IStocksRepository, StocksRepository>();
+builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
