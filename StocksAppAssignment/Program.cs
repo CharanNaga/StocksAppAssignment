@@ -12,11 +12,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("TradingOptions"));
 
-builder.Services.AddScoped<IFinnhubRepository, FinnhubRepository>();
-builder.Services.AddScoped<IStocksRepository, StocksRepository>();
+builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
+builder.Services.AddTransient<IStocksRepository, StocksRepository>();
 
-builder.Services.AddScoped<IFinnhubService, FinnhubService>();
-builder.Services.AddScoped<IStocksService, StocksService>();
+builder.Services.AddTransient<IFinnhubService, FinnhubService>();
+builder.Services.AddTransient<IStocksService, StocksService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -27,9 +27,16 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
+if (app.Environment.IsDevelopment())
+    app.UseDeveloperExceptionPage();
+
+//Configuring wkhtmltopdf file path here to identify the PDF file
+if (app.Environment.IsEnvironment("Test") == false)
+    RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
+
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
-
 app.Run();
+
+public partial class Program { } //we can access automatic generated program class programatically anywhere in the application

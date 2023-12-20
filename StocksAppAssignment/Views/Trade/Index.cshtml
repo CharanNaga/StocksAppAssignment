@@ -1,5 +1,4 @@
 ﻿@model StockTrade
-
 @{
     ViewBag.Title = "Trading";
     ViewBag.CurrentUrl = "~/Trade/Index";
@@ -9,11 +8,12 @@
     <i class="fa-solid fa-caret-right"></i>
     <span>@Model.StockName</span>
 </div>
-
 <form method="post">
     <div class="box trading-panel">
+
         <div class="flex trading-panel-flex">
             <div id="stock-price-panel">
+
                 <div class="stock">
                     <h1 class="stock-title">@Model.StockName (@Model.StockSymbol)</h1>
                     <h2 class="stock-price"><small class="text-grey">$</small> <span class="price">@Model.Price.ToString("N")</span></h2>
@@ -38,6 +38,7 @@
                 </div>
 
                 <div class="button-panel">
+
                     <button type="submit" formaction="~/Trade/SellOrder" class="button button-red-back trading-button sell-button">
                         <i class="fa-solid fa-arrow-down"></i>
                         <span>Sell</span>
@@ -69,6 +70,7 @@
     <input type="hidden" asp-for="Price" id="price" />
     <input type="hidden" id="FinnhubToken" value="@ViewBag.FinnhubToken" />
 </form>
+
 
 @section Scripts
     {

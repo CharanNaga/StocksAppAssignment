@@ -14,7 +14,6 @@ namespace Repositories
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
         }
-
         public async Task<Dictionary<string, object>?> GetCompanyProfile(string stockSymbol)
         {
             //create http client
@@ -45,8 +44,6 @@ namespace Repositories
             //return response dictionary back to the caller
             return responseDictionary;
         }
-
-
         public async Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
         {
             //create http client
@@ -77,8 +74,6 @@ namespace Repositories
             //return response dictionary back to the caller
             return responseDictionary;
         }
-
-
         public async Task<List<Dictionary<string, string>>?> GetStocks()
         {
             //create http client
@@ -106,8 +101,6 @@ namespace Repositories
             //return response dictionary back to the caller
             return responseDictionary;
         }
-
-
         public async Task<Dictionary<string, object>?> SearchStocks(string stockSymbolToSearch)
         {
             //create http client

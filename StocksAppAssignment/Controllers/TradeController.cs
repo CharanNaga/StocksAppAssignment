@@ -13,10 +13,10 @@ namespace StocksAppAssignment.Controllers
     [Route("[controller]")] //Route Token
     public class TradeController : Controller
     {
+        private readonly TradingOptions _tradingOptions;
+        private readonly IStocksService _stocksService;
         private readonly IFinnhubService _finnhubService;
         private readonly IConfiguration _configuration;
-        private readonly IStocksService _stocksService;
-        private readonly TradingOptions _tradingOptions;
 
         /// <summary>
         /// Constructor for TradeController that executes when a new object is created for the class
@@ -26,12 +26,12 @@ namespace StocksAppAssignment.Controllers
         /// <param name="stocksService">Injecting StocksService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
 
-        public TradeController(IFinnhubService finnhubService, IConfiguration configuration,IStocksService stocksService,IOptions<TradingOptions> tradingOptions)
+        public TradeController(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubService finnhubService, IConfiguration configuration)
         {
+            _tradingOptions = tradingOptions.Value;
+            _stocksService = stocksService;
             _finnhubService = finnhubService;
             _configuration = configuration;
-            _stocksService = stocksService;
-            _tradingOptions = tradingOptions.Value;
         }
 
         [Route("[action]/{stockSymbol}")]
@@ -48,27 +48,18 @@ namespace StocksAppAssignment.Controllers
             //get stock price quotes from API server
             Dictionary<string, object>? stockQuoteDictionary = await _finnhubService.GetStockPriceQuote(stockSymbol);
 
-
             //create model object
-            StockTrade stockTrade = new StockTrade()
-            { 
-                StockSymbol = stockSymbol
-            };
+            StockTrade stockTrade = new StockTrade() { StockSymbol = stockSymbol };
 
             //load data from finnHubService into model object
             if (companyProfileDictionary != null && stockQuoteDictionary != null)
             {
-                stockTrade = new StockTrade() 
-                { 
-                    StockSymbol = Convert.ToString(companyProfileDictionary["ticker"]),
-                    StockName = Convert.ToString(companyProfileDictionary["name"]),
-                    Quantity = _tradingOptions.DefaultOrderQuantity ?? 0,
-                    Price = Convert.ToDouble(stockQuoteDictionary["c"].ToString())
-                };
+                stockTrade = new StockTrade() { StockSymbol = companyProfileDictionary["ticker"].ToString(), StockName = companyProfileDictionary["name"].ToString(), Quantity = _tradingOptions.DefaultOrderQuantity ?? 0, Price = Convert.ToDouble(stockQuoteDictionary["c"].ToString()) };
             }
 
             //Send Finnhub token to view
             ViewBag.FinnhubToken = _configuration["FinnhubToken"];
+
             return View(stockTrade);
         }
         [Route("[action]")]
