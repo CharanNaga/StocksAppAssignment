@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RepositoryContracts;
 using System.Text.Json;
 
@@ -8,14 +9,19 @@ namespace Repositories
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<FinnhubRepository> _logger;
 
-        public FinnhubRepository(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public FinnhubRepository(IHttpClientFactory httpClientFactory, IConfiguration configuration,ILogger<FinnhubRepository> logger)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _logger = logger;
         }
         public async Task<Dictionary<string, object>?> GetCompanyProfile(string stockSymbol)
         {
+            //writing log message
+            _logger.LogInformation($"In {nameof(FinnhubRepository)}.{nameof(GetCompanyProfile)} Repository Method");
+
             //create http client
             HttpClient httpClient = _httpClientFactory.CreateClient();
 
@@ -46,7 +52,8 @@ namespace Repositories
         }
         public async Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
         {
-            //create http client
+            //writing log message
+            _logger.LogInformation($"In {nameof(FinnhubRepository)}.{nameof(GetStockPriceQuote)} Repository Method");
             HttpClient httpClient = _httpClientFactory.CreateClient();
 
             //create http request
@@ -76,6 +83,9 @@ namespace Repositories
         }
         public async Task<List<Dictionary<string, string>>?> GetStocks()
         {
+            //writing log message
+            _logger.LogInformation($"In {nameof(FinnhubRepository)}.{nameof(GetStocks)} repository method");
+
             //create http client
             HttpClient httpClient = _httpClientFactory.CreateClient();
 
