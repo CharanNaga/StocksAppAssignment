@@ -27,6 +27,9 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="Tests" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="logs\" />
+	</ItemGroup>
 
 	<ProjectExtensions>
 		<VisualStudio>
