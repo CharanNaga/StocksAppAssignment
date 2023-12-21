@@ -16,6 +16,7 @@ namespace StocksAppAssignment.Controllers
         private readonly IStocksService _stocksService;
         private readonly IFinnhubService _finnhubService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<TradeController> _logger;
 
         /// <summary>
         /// Constructor for TradeController that executes when a new object is created for the class
@@ -24,19 +25,26 @@ namespace StocksAppAssignment.Controllers
         /// <param name="finnhubService">Injecting FinnhubService</param>
         /// <param name="stocksService">Injecting StocksService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
+        /// <param name="logger">Injecting ILogger</param>
 
-        public TradeController(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubService finnhubService, IConfiguration configuration)
+        public TradeController(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubService finnhubService, IConfiguration configuration, ILogger<TradeController> logger)
         {
             _tradingOptions = tradingOptions.Value;
             _stocksService = stocksService;
             _finnhubService = finnhubService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [Route("[action]/{stockSymbol}")]
         [Route("~/[controller]/{stockSymbol}")]
+        [HttpGet]
         public async Task<IActionResult> Index(string stockSymbol)
         {
+            //writing logging messages
+            _logger.LogInformation($"In {nameof(TradeController)}.{nameof(Index)} action method");
+            _logger.LogDebug($"stockSymbol: {stockSymbol}");
+
             //reset stock symbol if not exists
             if (string.IsNullOrEmpty(stockSymbol))
                 stockSymbol = "MSFT";

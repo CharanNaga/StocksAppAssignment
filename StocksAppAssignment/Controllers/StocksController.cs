@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Repositories;
 using ServiceContracts;
 using StocksAppAssignment.Models;
 
@@ -10,11 +11,13 @@ namespace StocksAppAssignment.Controllers
     {
         private readonly TradingOptions _tradingOptions;
         private readonly IFinnhubService _finnhubService;
+        private readonly ILogger<StocksController> _logger;
 
-        public StocksController(IOptions<TradingOptions> options,IFinnhubService finnhubService)
+        public StocksController(IOptions<TradingOptions> options,IFinnhubService finnhubService, ILogger<StocksController> logger)
         {
             _tradingOptions = options.Value;
             _finnhubService = finnhubService;
+            _logger = logger;
         }
 
         [Route("/")]
@@ -22,6 +25,9 @@ namespace StocksAppAssignment.Controllers
         [Route("~/[action]/{stock?}")]
         public async Task<IActionResult> Explore(string? stock,bool showAll = false)
         {
+            //writing logging message
+            _logger.LogInformation($"In {nameof(StocksController)}.{nameof(Explore)} action method");
+
             //get company profile from Finnhub API server
             List<Dictionary<string, string>>? stocksDictionary = await _finnhubService.GetStocks();
 
