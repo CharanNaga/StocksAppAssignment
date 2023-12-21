@@ -14,14 +14,15 @@ namespace Tests
             _httpClient = factory.CreateClient();
         }
 
-        #region Index
+        #region Orders
         [Fact]
-        public async Task Index_ToReturnView()
+        public async Task Orders_ToReturnView()
         {
             //Arrange
 
             //Act
-            HttpResponseMessage response = await _httpClient.GetAsync("/Trade/Index/MSFT");
+            //HttpResponseMessage response = await _httpClient.GetAsync("/Trade/Index/MSFT");
+            HttpResponseMessage response = await _httpClient.GetAsync("/Trade/Orders");
 
             //Assert
             response.Should().BeSuccessful(); //2xx
