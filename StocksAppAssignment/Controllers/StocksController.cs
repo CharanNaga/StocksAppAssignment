@@ -13,10 +13,10 @@ namespace StocksAppAssignment.Controllers
         private readonly IFinnhubStocksService _finnhubStocksService;
         private readonly ILogger<StocksController> _logger;
 
-        public StocksController(IOptions<TradingOptions> options,IFinnhubStocksService finnhubService, ILogger<StocksController> logger)
+        public StocksController(IOptions<TradingOptions> options,IFinnhubStocksService finnhubStocksService, ILogger<StocksController> logger)
         {
             _tradingOptions = options.Value;
-            _finnhubStocksService = finnhubService;
+            _finnhubStocksService = finnhubStocksService;
             _logger = logger;
         }
 
