@@ -25,7 +25,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("TradingOptions"));
 
-builder.Services.AddTransient<IStocksService, StocksService>();
+builder.Services.AddTransient<IBuyOrdersService, BuyOrdersService>();
+builder.Services.AddTransient<ISellOrdersService, SellOrdersService>();
+
 builder.Services.AddTransient<IFinnhubCompanyProfileService, FinnhubCompanyProfileService>();
 builder.Services.AddTransient<IFinnhubSearchStocksService, FinnhubSearchStocksService>();
 builder.Services.AddTransient<IFinnhubStockPriceQuoteService, FinnhubStockPriceQuoteService>();
