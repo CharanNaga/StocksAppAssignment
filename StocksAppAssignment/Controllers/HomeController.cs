@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using StocksAppAssignment.Models;
 
 namespace StocksAppAssignment.Controllers
 {
@@ -11,13 +12,17 @@ namespace StocksAppAssignment.Controllers
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>(); 
             if(exceptionHandlerPathFeature != null && exceptionHandlerPathFeature.Error != null)
             {
-                ViewBag.ErrorMessage = exceptionHandlerPathFeature.Error.Message;
+                //ViewBag.ErrorMessage = exceptionHandlerPathFeature.Error.Message;
+                Error error = new Error() { ErrorMessage = exceptionHandlerPathFeature.Error.Message};
+                return View(error);
             }
             else
             {
-                ViewBag.ErrorMessage = "Error Occured";
+                //ViewBag.ErrorMessage = "Error Occured";
+                Error error = new Error() { ErrorMessage = "Error Occured" };
+                return View(error);
             }
-            return View();
+           
         }
     }
 }
