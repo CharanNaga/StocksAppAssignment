@@ -10,13 +10,13 @@ namespace StocksAppAssignment.Controllers
     public class StocksController : Controller
     {
         private readonly TradingOptions _tradingOptions;
-        private readonly IFinnhubService _finnhubService;
+        private readonly IFinnhubStocksService _finnhubStocksService;
         private readonly ILogger<StocksController> _logger;
 
-        public StocksController(IOptions<TradingOptions> options,IFinnhubService finnhubService, ILogger<StocksController> logger)
+        public StocksController(IOptions<TradingOptions> options,IFinnhubStocksService finnhubService, ILogger<StocksController> logger)
         {
             _tradingOptions = options.Value;
-            _finnhubService = finnhubService;
+            _finnhubStocksService = finnhubService;
             _logger = logger;
         }
 
@@ -29,7 +29,7 @@ namespace StocksAppAssignment.Controllers
             _logger.LogInformation($"In {nameof(StocksController)}.{nameof(Explore)} action method");
 
             //get company profile from Finnhub API server
-            List<Dictionary<string, string>>? stocksDictionary = await _finnhubService.GetStocks();
+            List<Dictionary<string, string>>? stocksDictionary = await _finnhubStocksService.GetStocks();
 
             List<Stock> stocks = new List<Stock>();
 

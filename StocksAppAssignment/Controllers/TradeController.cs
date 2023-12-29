@@ -15,7 +15,10 @@ namespace StocksAppAssignment.Controllers
     {
         private readonly TradingOptions _tradingOptions;
         private readonly IStocksService _stocksService;
-        private readonly IFinnhubService _finnhubService;
+
+        private readonly IFinnhubCompanyProfileService _finnhubCompanyProfileService;
+        private readonly IFinnhubStockPriceQuoteService _finnhubStockPriceQuoteService;
+
         private readonly IConfiguration _configuration;
         private readonly ILogger<TradeController> _logger;
 
@@ -23,16 +26,17 @@ namespace StocksAppAssignment.Controllers
         /// Constructor for TradeController that executes when a new object is created for the class
         /// </summary>
         /// <param name="tradingOptions">Injecting TradeOptions config through Options pattern</param>
-        /// <param name="finnhubService">Injecting FinnhubService</param>
+        /// <param name="finnhubCompanyProfileService">Injecting FinnhubService</param>
         /// <param name="stocksService">Injecting StocksService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
         /// <param name="logger">Injecting ILogger</param>
 
-        public TradeController(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubService finnhubService, IConfiguration configuration, ILogger<TradeController> logger)
+        public TradeController(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubCompanyProfileService finnhubCompanyProfileService, IFinnhubStockPriceQuoteService finnhubStockPriceQuoteService,IConfiguration configuration, ILogger<TradeController> logger)
         {
             _tradingOptions = tradingOptions.Value;
             _stocksService = stocksService;
-            _finnhubService = finnhubService;
+            _finnhubCompanyProfileService = finnhubCompanyProfileService;
+            _finnhubStockPriceQuoteService = finnhubStockPriceQuoteService;
             _configuration = configuration;
             _logger = logger;
         }
@@ -51,10 +55,10 @@ namespace StocksAppAssignment.Controllers
                 stockSymbol = "MSFT";
 
             //get company profile from API server
-            Dictionary<string, object>? companyProfileDictionary = await _finnhubService.GetCompanyProfile(stockSymbol);
+            Dictionary<string, object>? companyProfileDictionary = await _finnhubCompanyProfileService.GetCompanyProfile(stockSymbol);
 
             //get stock price quotes from API server
-            Dictionary<string, object>? stockQuoteDictionary = await _finnhubService.GetStockPriceQuote(stockSymbol);
+            Dictionary<string, object>? stockQuoteDictionary = await _finnhubStockPriceQuoteService.GetStockPriceQuote(stockSymbol);
 
             //create model object
             StockTrade stockTrade = new StockTrade() { StockSymbol = stockSymbol };
