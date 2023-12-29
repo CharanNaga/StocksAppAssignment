@@ -5,6 +5,7 @@ using Rotativa.AspNetCore;
 using Rotativa.AspNetCore.Options;
 using ServiceContracts;
 using ServiceContracts.DTO;
+using StocksAppAssignment.Filters.ActionFilters;
 using StocksAppAssignment.Models;
 
 namespace StocksAppAssignment.Controllers
@@ -71,47 +72,19 @@ namespace StocksAppAssignment.Controllers
         }
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> BuyOrder(BuyOrderRequest buyOrderRequest) 
+        [TypeFilter(typeof(CreateOrderActionFilter))]
+        public async Task<IActionResult> BuyOrder(BuyOrderRequest orderRequest) 
         {
-            //update Order date
-            buyOrderRequest.DateAndTimeOfOrder = DateTime.Now;
-
-            //re-validate model object
-            ModelState.Clear();
-            TryValidateModel(buyOrderRequest);
-            
-            //If Model state is not valid
-            if(!ModelState.IsValid)
-            {
-                List<string> errors = ModelState.Values.SelectMany(v=>v.Errors).Select(e=>e.ErrorMessage).ToList();
-                ViewBag.Errors = errors;
-                StockTrade stockTrade = new StockTrade() { StockName = buyOrderRequest.StockName, Quantity = buyOrderRequest.Quantity, StockSymbol = buyOrderRequest.StockSymbol };
-                return View("Index", stockTrade);
-            }
-            BuyOrderResponse buyOrderResponse = await _stocksService.CreateBuyOrder(buyOrderRequest);
+            BuyOrderResponse buyOrderResponse = await _stocksService.CreateBuyOrder(orderRequest);
             return RedirectToAction("Orders","Trade");
         }
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
+        [TypeFilter(typeof(CreateOrderActionFilter))]
+        public async Task<IActionResult> SellOrder(SellOrderRequest orderRequest)
         {
-            //update Order date
-            sellOrderRequest.DateAndTimeOfOrder = DateTime.Now;
-
-            //re-validate model object
-            ModelState.Clear();
-            TryValidateModel(sellOrderRequest);
-
-            //If Model state is not valid
-            if (!ModelState.IsValid)
-            {
-                List<string> errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                ViewBag.Errors = errors;
-                StockTrade stockTrade = new StockTrade() { StockName = sellOrderRequest.StockName, Quantity = sellOrderRequest.Quantity, StockSymbol = sellOrderRequest.StockSymbol };
-                return View("Index", stockTrade);
-            }
-            SellOrderResponse buyOrderResponse = await _stocksService.CreateSellOrder(sellOrderRequest);
+            SellOrderResponse buyOrderResponse = await _stocksService.CreateSellOrder(orderRequest);
             return RedirectToAction("Orders", "Trade");
         }
         [Route("[action]")]
