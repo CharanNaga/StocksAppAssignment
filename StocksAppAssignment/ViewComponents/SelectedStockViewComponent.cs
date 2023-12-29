@@ -7,17 +7,15 @@ namespace StocksAppAssignment.ViewComponents
     public class SelectedStockViewComponent : ViewComponent
     {
         private readonly TradingOptions _tradingOptions;
-        private readonly IStocksService _stocksService;
         
         private readonly IFinnhubCompanyProfileService _finnhubCompanyProfileService;
         private readonly IFinnhubStockPriceQuoteService _finnhubStockPriceQuoteService;
 
         private readonly IConfiguration _configuration;
 
-        public SelectedStockViewComponent(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubCompanyProfileService finnhubCompanyProfileService, IFinnhubStockPriceQuoteService finnhubStockPriceQuoteService,IConfiguration configuration)
+        public SelectedStockViewComponent(IOptions<TradingOptions> tradingOptions,IFinnhubCompanyProfileService finnhubCompanyProfileService, IFinnhubStockPriceQuoteService finnhubStockPriceQuoteService,IConfiguration configuration)
         {
             _tradingOptions = tradingOptions.Value;
-            _stocksService = stocksService;
             _finnhubCompanyProfileService = finnhubCompanyProfileService;
             _finnhubStockPriceQuoteService = finnhubStockPriceQuoteService;
             _configuration = configuration;
