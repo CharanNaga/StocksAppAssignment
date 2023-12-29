@@ -37,8 +37,10 @@ namespace StocksAppAssignment.Middleware
                     _logger.LogError("{ExceptionType}\n{ExceptionMessage}",
                        ex.GetType().ToString(), ex.Message);
                 }
-                httpContext.Response.StatusCode = 500;
-                await httpContext.Response.WriteAsync("Error Occured");
+                //httpContext.Response.StatusCode = 500;
+                //await httpContext.Response.WriteAsync("Error Occured");
+
+                throw; //will be handled by built-in exception handler
             }
         }
     }
