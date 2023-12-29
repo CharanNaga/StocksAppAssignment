@@ -14,7 +14,8 @@ namespace StocksAppAssignment.Controllers
     public class TradeController : Controller
     {
         private readonly TradingOptions _tradingOptions;
-        private readonly IStocksService _stocksService;
+        private readonly IBuyOrdersService _buyOrdersService;
+        private readonly ISellOrdersService _sellOrdersService;
 
         private readonly IFinnhubCompanyProfileService _finnhubCompanyProfileService;
         private readonly IFinnhubStockPriceQuoteService _finnhubStockPriceQuoteService;
@@ -27,14 +28,15 @@ namespace StocksAppAssignment.Controllers
         /// </summary>
         /// <param name="tradingOptions">Injecting TradeOptions config through Options pattern</param>
         /// <param name="finnhubCompanyProfileService">Injecting FinnhubService</param>
-        /// <param name="stocksService">Injecting StocksService</param>
+        /// <param name="buyOrdersService">Injecting StocksService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
         /// <param name="logger">Injecting ILogger</param>
 
-        public TradeController(IOptions<TradingOptions> tradingOptions, IStocksService stocksService, IFinnhubCompanyProfileService finnhubCompanyProfileService, IFinnhubStockPriceQuoteService finnhubStockPriceQuoteService,IConfiguration configuration, ILogger<TradeController> logger)
+        public TradeController(IOptions<TradingOptions> tradingOptions, IBuyOrdersService buyOrdersService,ISellOrdersService sellOrdersService, IFinnhubCompanyProfileService finnhubCompanyProfileService, IFinnhubStockPriceQuoteService finnhubStockPriceQuoteService,IConfiguration configuration, ILogger<TradeController> logger)
         {
             _tradingOptions = tradingOptions.Value;
-            _stocksService = stocksService;
+            _buyOrdersService = buyOrdersService;
+            _sellOrdersService = sellOrdersService;
             _finnhubCompanyProfileService = finnhubCompanyProfileService;
             _finnhubStockPriceQuoteService = finnhubStockPriceQuoteService;
             _configuration = configuration;
@@ -79,7 +81,7 @@ namespace StocksAppAssignment.Controllers
         [TypeFilter(typeof(CreateOrderActionFilter))]
         public async Task<IActionResult> BuyOrder(BuyOrderRequest orderRequest) 
         {
-            BuyOrderResponse buyOrderResponse = await _stocksService.CreateBuyOrder(orderRequest);
+            BuyOrderResponse buyOrderResponse = await _buyOrdersService.CreateBuyOrder(orderRequest);
             return RedirectToAction("Orders","Trade");
         }
 
@@ -88,15 +90,15 @@ namespace StocksAppAssignment.Controllers
         [TypeFilter(typeof(CreateOrderActionFilter))]
         public async Task<IActionResult> SellOrder(SellOrderRequest orderRequest)
         {
-            SellOrderResponse buyOrderResponse = await _stocksService.CreateSellOrder(orderRequest);
+            SellOrderResponse buyOrderResponse = await _sellOrdersService.CreateSellOrder(orderRequest);
             return RedirectToAction("Orders", "Trade");
         }
         [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Orders()
         {
-            List<BuyOrderResponse> buyOrderResponse = await _stocksService.GetBuyOrders();
-            List<SellOrderResponse> sellOrderResponse = await _stocksService.GetSellOrders();
+            List<BuyOrderResponse> buyOrderResponse = await _buyOrdersService.GetBuyOrders();
+            List<SellOrderResponse> sellOrderResponse = await _sellOrdersService.GetSellOrders();
             Orders orders = new Orders()
             {
                 BuyOrders = buyOrderResponse,
@@ -110,8 +112,8 @@ namespace StocksAppAssignment.Controllers
         {
             //Get list of orders
             List<IOrderResponse> orders = new List<IOrderResponse>();
-            orders.AddRange(await _stocksService.GetBuyOrders());
-            orders.AddRange(await _stocksService.GetSellOrders());
+            orders.AddRange(await _buyOrdersService.GetBuyOrders());
+            orders.AddRange(await _sellOrdersService.GetSellOrders());
             orders = orders.OrderByDescending(temp => temp.DateAndTimeOfOrder).ToList();
 
             ViewBag.TradingOptions = _tradingOptions;
