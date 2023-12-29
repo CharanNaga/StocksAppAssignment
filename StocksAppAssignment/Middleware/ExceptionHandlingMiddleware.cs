@@ -19,7 +19,7 @@ namespace StocksAppAssignment.Middleware
             _diagnosticContext = diagnosticContext;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
