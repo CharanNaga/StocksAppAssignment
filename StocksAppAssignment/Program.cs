@@ -8,6 +8,7 @@ using Serilog;
 using ServiceContracts;
 using Services;
 using StocksAppAssignment;
+using StocksAppAssignment.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,10 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
+else
+{
+    app.UseExceptionHandlingMiddleware();
+}
 
 //Configuring wkhtmltopdf file path here to identify the PDF file
 if (app.Environment.IsEnvironment("Test") == false)
